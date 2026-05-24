@@ -16,10 +16,11 @@ alunos = list(map(
 
 MediaAlunos = list(map(lambda x: {
     'nome': x['nome'],
+    'faltas': x['faltas'],
     'media': min(sum(x['notas']) / len(x['notas'])+ 1 if x['extra'] == 1 else sum(x['notas']) / len(x['notas']),10)
 },alunos))
 
-aprovadosMedia = list(filter(lambda x: x['media'] >=7, MediaAlunos))
+aprovadosMedia = list(filter(lambda x: x['media'] >=7 and x['faltas'] <15, MediaAlunos))
 recuperacao = list(filter(lambda x: x['media'] <7, MediaAlunos))
 reprovadoFalta = list(filter(
     lambda x: x['faltas'] >= 15,
