@@ -1,4 +1,5 @@
 import csv
+from functools import reduce
 
 with open('Pasta1.csv', 'r') as arquivo:
     leitor = csv.DictReader(arquivo, delimiter=';')
@@ -12,29 +13,20 @@ alunos = list(map(
     }, 
     dados))
 
-#print(alunos)
+
 
 MediaAlunos = list(map(lambda x: {
     'nome': x['nome'],
     'faltas': x['faltas'],
-    'media': min(sum(x['notas']) / len(x['notas'])+ 1 if x['extra'] == 1 else sum(x['notas']) / len(x['notas']),10)
+    'media': round(min(sum(x['notas']) / len(x['notas'])+ 1 if x['extra'] == 1 else sum(x['notas']) / len(x['notas']),10),2)
 },alunos))
-
 aprovadosMedia = list(filter(lambda x: x['media'] >=7 and x['faltas'] <15, MediaAlunos))
-recuperacao = list(filter(lambda x: x['media'] <7, MediaAlunos))
+recuperacao = list(filter(lambda x: x['media'] <7 and x['faltas'] < 15, MediaAlunos))
+
 reprovadoFalta = list(filter(
     lambda x: x['faltas'] >= 15,
     alunos
 ))
-
-print("XXXXXAPROVADO POR MÉDIA: xxxxx")
-print(aprovadosMedia)
-print("xxxxx REPROVADO POR FALTAS:xxxxx")
-print(reprovadoFalta)
-print("xxxxx RECUPERAÇÃO:xxxxx")
-print(recuperacao)
-print("xxxxx   MÉDIA DE ALUNOS: xxxxx")
-print(MediaAlunos)
 
 with open('final.csv', 'r') as arquivo_final:
     leitor_final = csv.DictReader(arquivo_final, delimiter=';')
@@ -43,16 +35,60 @@ with open('final.csv', 'r') as arquivo_final:
 alunosFinal = list(map(
     lambda x: {
         'nome': x['nome'],
+        'faltas': x['faltas'],
+        'media': float(x['media']),
         'notaFinal': float(x['nota5'])
     }, 
     dados_final))
-
-resultadoFinal = list(map(
+aprovadosMediaStatus = list(map(
     lambda x: {
         'nome': x['nome'],
-        'status': 'AprovadoFinal' if x['notaFinal'] >= 5 else 'Reprovado'
+        'media': x['media'],
+        'faltas': x['faltas'],
+        'status': 'Aprovado por média'
     },
-    alunosFinal
+    aprovadosMedia
 ))
+reprovadoFaltaStatus = list(map(lambda x: {
+    'nome': x['nome'],
+    'faltas': x['faltas'],
+    'status': 'Reprovado por falta'
+}, reprovadoFalta))
 
-print(resultadoFinal)
+AprovadoouReprovado = list(map(lambda x: {
+
+    'nome': x['nome'],
+    'media': round((x['media'] + x['notaFinal'])/2,2) if x['notaFinal'] >= 5 else x['media'],
+    'faltas': x['faltas'],
+    'status': 'reprovado' if x['notaFinal'] <5 else 'aprovado'
+
+
+}, alunosFinal))
+
+lauread = reduce(
+    lambda maior, atual:
+        atual if atual['media'] > maior['media'] else maior,
+    MediaAlunos
+)
+
+laureado = {
+    'nome': lauread['nome'],
+    'media': lauread['media'],
+    'faltas': '',
+    'status': 'Laureado'
+}
+
+resultadoFinal = (aprovadosMediaStatus + reprovadoFaltaStatus + AprovadoouReprovado + [laureado])
+with open('resultado.csv', 'w') as arquivo:
+    campos = ['nome', 'faltas', 'media', 'status']
+    gerarArquivo = csv.DictWriter(arquivo,fieldnames = campos, delimiter =';')
+    gerarArquivo.writeheader()
+    gerarArquivo.writerows(resultadoFinal)
+    
+    
+    
+    
+    
+    
+    
+    

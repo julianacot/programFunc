@@ -1,11 +1,11 @@
-nome;nota5
-Joyce;6
-Pedro;4
-Aline;5
-Enzozo;7
-Neymar;3
-Lucas Silva;6
-Beatriz Alves;6
-Thiago Pereira;5
-Carla Mendes;7
-Vinicius Oliveira;6
+nome;media;nota5;faltas
+Joyce;7.75;6;18
+Pedro;4.25;4;20
+Aline;4.75;5;16
+Enzozo;3.63;7;5
+Neymar;0.46;3;22
+Lucas Silva;7.0;6;2
+Beatriz Alves;6.25;6;14
+Thiago Pereira;6.0;5;19
+Carla Mendes;4.0;7;8
+Vinicius Oliveira;4.25;6;21
