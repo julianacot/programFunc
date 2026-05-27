@@ -25,7 +25,7 @@ recuperacao = list(filter(lambda x: x['media'] <7 and x['faltas'] < 15, MediaAlu
 
 reprovadoFalta = list(filter(
     lambda x: x['faltas'] >= 15,
-    alunos
+    MediaAlunos
 ))
 
 with open('final.csv', 'r') as arquivo_final:
@@ -52,15 +52,16 @@ aprovadosMediaStatus = list(map(
 reprovadoFaltaStatus = list(map(lambda x: {
     'nome': x['nome'],
     'faltas': x['faltas'],
+    'media': x['media'],
     'status': 'Reprovado por falta'
 }, reprovadoFalta))
 
 AprovadoouReprovado = list(map(lambda x: {
 
     'nome': x['nome'],
-    'media': round((x['media'] + x['notaFinal'])/2,2) if x['notaFinal'] >= 5 else x['media'],
+    'media': round((x['media'] + x['notaFinal'])/2,2),
     'faltas': x['faltas'],
-    'status': 'reprovado' if x['notaFinal'] <5 else 'aprovado'
+    'status': 'Aprovado' if (x['media'] + x['notaFinal']) / 2>=5 else 'reprovado'
 
 
 }, alunosFinal))

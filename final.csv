@@ -1,11 +1,5 @@
-nome;media;nota5;faltas
-Joyce;7.75;6;18
-Pedro;4.25;4;20
-Aline;4.75;5;16
-Enzozo;3.63;7;5
-Neymar;0.46;3;22
-Lucas Silva;7.0;6;2
-Beatriz Alves;6.25;6;14
-Thiago Pereira;6.0;5;19
-Carla Mendes;4.0;7;8
-Vinicius Oliveira;4.25;6;21
+nome;faltas;media;nota5
+Enzonzo;5;3.62;7
+Beatriz Alves;14;6.25;1
+Carla Mendes;8;4.0;5
+Amanda Ferreira;3;5.75;3
