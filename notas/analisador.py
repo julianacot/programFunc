@@ -13,12 +13,14 @@ alunos = list(map(
     }, 
     dados))
 
-
+mediaCalcular = lambda nota:sum(nota) / len(nota)
+menor = lambda a,b: a if a< b else b
+mediaFinal = lambda media, final: (media + final) /2
 
 MediaAlunos = list(map(lambda x: {
     'nome': x['nome'],
     'faltas': x['faltas'],
-    'media': round(min(sum(x['notas']) / len(x['notas'])+ 1 if x['extra'] == 1 else sum(x['notas']) / len(x['notas']),10),2)
+    'media': round(menor(mediaCalcular(x ['notas']) + 1 if x['extra'] == 1 else mediaCalcular(x['notas']),10),2)
 },alunos))
 aprovadosMedia = list(filter(lambda x: x['media'] >=7 and x['faltas'] <15, MediaAlunos))
 recuperacao = list(filter(lambda x: x['media'] <7 and x['faltas'] < 15, MediaAlunos))
@@ -59,9 +61,9 @@ reprovadoFaltaStatus = list(map(lambda x: {
 AprovadoouReprovado = list(map(lambda x: {
 
     'nome': x['nome'],
-    'media': round((x['media'] + x['notaFinal'])/2,2),
+    'media': round(mediaFinal(x['media'], x['notaFinal']),2),
     'faltas': x['faltas'],
-    'status': 'Aprovado' if (x['media'] + x['notaFinal']) / 2>=5 else 'reprovado'
+    'status': 'Aprovado' if mediaFinal(x['media'], x['notaFinal'])>=5 else 'reprovado'
 
 
 }, alunosFinal))
@@ -75,7 +77,7 @@ lauread = reduce(
 laureado = {
     'nome': lauread['nome'],
     'media': lauread['media'],
-    'faltas': '',
+    'faltas': lauread['faltas'],
     'status': 'Laureado'
 }
 
