@@ -15,7 +15,7 @@ alunos = list(map(
 
 mediaCalcular = lambda nota:sum(nota) / len(nota)
 menor = lambda a,b: a if a< b else b
-mediaFinal = lambda media, final: (media + final) /2
+mediadafinal = lambda media, final: (media + final) /2
 
 MediaAlunos = list(map(lambda x: {
     'nome': x['nome'],
@@ -61,9 +61,9 @@ reprovadoFaltaStatus = list(map(lambda x: {
 AprovadoouReprovado = list(map(lambda x: {
 
     'nome': x['nome'],
-    'media': round(mediaFinal(x['media'], x['notaFinal']),2),
+    'media': round(mediadafinal(x['media'], x['notaFinal']),2),
     'faltas': x['faltas'],
-    'status': 'Aprovado' if mediaFinal(x['media'], x['notaFinal'])>=5 else 'reprovado'
+    'status': 'Aprovado' if mediadafinal(x['media'], x['notaFinal'])>=5 else 'reprovado'
 
 
 }, alunosFinal))
@@ -74,16 +74,6 @@ lauread = reduce(
     MediaAlunos
 )
 
-contagemAprovadosMedia = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Aprovado por média' else contFinal, aprovadosMediaStatus,0)
-contagemAprovados = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Aprovado' else contFinal, AprovadoouReprovado,0)
-contagemReprovados = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'reprovado' else contFinal, AprovadoouReprovado,0)
-contagemReprovadosFalta = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Reprovado por falta' else contFinal, reprovadoFaltaStatus,0)
-contagemTotal = sum(map(lambda cont: 1, alunos))
-print(contagemTotal)
-print(contagemAprovadosMedia)
-print(contagemAprovados)
-print(contagemReprovados)
-print(contagemReprovadosFalta)
 
 laureado = {
     'nome': lauread['nome'],
@@ -99,3 +89,20 @@ with open('resultado.csv', 'w') as arquivo:
     gerarArquivo.writeheader()
     gerarArquivo.writerows(resultadoFinal)
     
+contagemAprovadosMedia = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Aprovado por média' else contFinal, aprovadosMediaStatus,0)
+contagemAprovados = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Aprovado' else contFinal, AprovadoouReprovado,0)
+contagemReprovados = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'reprovado' else contFinal, AprovadoouReprovado,0)
+contagemReprovadosFalta = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Reprovado por falta' else contFinal, reprovadoFaltaStatus,0)
+contagemTotal = sum(map(lambda cont: 1, alunos))
+print(contagemTotal)
+print(contagemAprovadosMedia)
+print(contagemAprovados)
+print(contagemReprovados)
+print(contagemReprovadosFalta)
+
+porcentagem = lambda x,y: round(x * 100 / y,2) if x> 0 else 0
+
+print(f'Aprovados por media: {porcentagem(contagemAprovadosMedia, contagemTotal)}%')
+print(f"Aprovados na final:  {porcentagem(contagemAprovados, contagemTotal)}%")
+print(f"Reprovados na final: {porcentagem(contagemReprovados, contagemTotal)}%")
+print(f"Reprovados por falta: {porcentagem(contagemReprovadosFalta, contagemTotal)}%")
