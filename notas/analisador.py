@@ -74,6 +74,17 @@ lauread = reduce(
     MediaAlunos
 )
 
+contagemAprovadosMedia = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Aprovado por média' else contFinal, aprovadosMediaStatus,0)
+contagemAprovados = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Aprovado' else contFinal, AprovadoouReprovado,0)
+contagemReprovados = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'reprovado' else contFinal, AprovadoouReprovado,0)
+contagemReprovadosFalta = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Reprovado por falta' else contFinal, reprovadoFaltaStatus,0)
+contagemTotal = sum(map(lambda cont: 1, alunos))
+print(contagemTotal)
+print(contagemAprovadosMedia)
+print(contagemAprovados)
+print(contagemReprovados)
+print(contagemReprovadosFalta)
+
 laureado = {
     'nome': lauread['nome'],
     'media': lauread['media'],
@@ -87,11 +98,4 @@ with open('resultado.csv', 'w') as arquivo:
     gerarArquivo = csv.DictWriter(arquivo,fieldnames = campos, delimiter =';')
     gerarArquivo.writeheader()
     gerarArquivo.writerows(resultadoFinal)
-    
-    
-    
-    
-    
-    
-    
     
