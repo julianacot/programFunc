@@ -22,8 +22,8 @@ MediaAlunos = list(map(lambda x: {
     'faltas': x['faltas'],
     'media': round(menor(mediaCalcular(x ['notas']) + 1 if x['extra'] == 1 else mediaCalcular(x['notas']),10),2)
 },alunos))
-aprovadosMedia = list(filter(lambda x: x['media'] >=7 and x['faltas'] <15, MediaAlunos))
-recuperacao = list(filter(lambda x: x['media'] <7 and x['faltas'] < 15, MediaAlunos))
+aprovadosMedia = list(filter(lambda x: x['media'] >=7, filter(lambda x :  x['faltas'] <15, MediaAlunos)))
+recuperacao = list(filter(lambda x: x['media'] <7, filter(lambda x : x['faltas'] < 15, MediaAlunos)))
 
 reprovadoFalta = list(filter(
     lambda x: x['faltas'] >= 15,
@@ -68,21 +68,16 @@ AprovadoouReprovado = list(map(lambda x: {
 
 }, alunosFinal))
 
-lauread = reduce(
-    lambda maior, atual:
-        atual if atual['media'] > maior['media'] else maior,
-    MediaAlunos
-)
+maiorMedia = max(map(lambda x: x['media'], MediaAlunos))
 
-
-laureado = {
-    'nome': lauread['nome'],
-    'media': lauread['media'],
-    'faltas': lauread['faltas'],
+laureados = list(map(lambda x: {
+    'nome': x['nome'],
+    'media': x['media'],
+    'faltas': x['faltas'],
     'status': 'Laureado'
-}
+}, filter(lambda x: x['media'] == maiorMedia, MediaAlunos)))
 
-resultadoFinal = (aprovadosMediaStatus + reprovadoFaltaStatus + AprovadoouReprovado + [laureado])
+resultadoFinal = (aprovadosMediaStatus + reprovadoFaltaStatus + AprovadoouReprovado + laureados)
 with open('resultado.csv', 'w') as arquivo:
     campos = ['nome', 'faltas', 'media', 'status']
     gerarArquivo = csv.DictWriter(arquivo,fieldnames = campos, delimiter =';')
