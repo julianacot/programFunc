@@ -14,7 +14,7 @@ alunos = list(map(
     dados))
 
 mediaCalcular = lambda nota:sum(nota) / len(nota)
-menor = lambda a,b: a if a< b else b
+menor = lambda x,y: x if x< y else y
 mediadafinal = lambda media, final: (media + final) /2
 
 MediaAlunos = list(map(lambda x: {
@@ -22,11 +22,12 @@ MediaAlunos = list(map(lambda x: {
     'faltas': x['faltas'],
     'media': round(menor(mediaCalcular(x ['notas']) + 1 if x['extra'] == 1 else mediaCalcular(x['notas']),10),2)
 },alunos))
-aprovadosMedia = list(filter(lambda x: x['media'] >=7, filter(lambda x :  x['faltas'] <15, MediaAlunos)))
+aprovadosMedia = list(filter(lambda apm: apm['media'] >=7, filter(lambda x :  x['faltas'] <15, MediaAlunos)))
+print(aprovadosMedia)
 recuperacao = list(filter(lambda x: x['media'] <7, filter(lambda x : x['faltas'] < 15, MediaAlunos)))
 
 reprovadoFalta = list(filter(
-    lambda x: x['faltas'] >= 15,
+    lambda alunoRepr: alunoRepr['faltas'] >= 15,
     MediaAlunos
 ))
 
@@ -47,7 +48,7 @@ aprovadosMediaStatus = list(map(
         'nome': x['nome'],
         'media': x['media'],
         'faltas': x['faltas'],
-        'status': 'Aprovado por média'
+        'status': 'Aprovado por media'
     },
     aprovadosMedia
 ))
@@ -78,26 +79,50 @@ laureados = list(map(lambda x: {
 }, filter(lambda x: x['media'] == maiorMedia, MediaAlunos)))
 
 resultadoFinal = (aprovadosMediaStatus + reprovadoFaltaStatus + AprovadoouReprovado + laureados)
-with open('resultado.csv', 'w') as arquivo:
+with open('resultado.csv', 'w', newline = '') as arquivo:
     campos = ['nome', 'faltas', 'media', 'status']
     gerarArquivo = csv.DictWriter(arquivo,fieldnames = campos, delimiter =';')
     gerarArquivo.writeheader()
     gerarArquivo.writerows(resultadoFinal)
     
-contagemAprovadosMedia = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Aprovado por média' else contFinal, aprovadosMediaStatus,0)
+contagemAprovadosMedia = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Aprovado por media' else contFinal, aprovadosMediaStatus,0)
 contagemAprovados = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Aprovado' else contFinal, AprovadoouReprovado,0)
 contagemReprovados = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'reprovado' else contFinal, AprovadoouReprovado,0)
 contagemReprovadosFalta = reduce(lambda contFinal, estado : contFinal+1 if estado['status'] == 'Reprovado por falta' else contFinal, reprovadoFaltaStatus,0)
 contagemTotal = sum(map(lambda cont: 1, alunos))
-print(contagemTotal)
-print(contagemAprovadosMedia)
-print(contagemAprovados)
-print(contagemReprovados)
-print(contagemReprovadosFalta)
 
-porcentagem = lambda x,y: round(x * 100 / y,2) if x> 0 else 0
+porcentagem = lambda x,y: round(x * 100 / y,2)
 
-print(f'Aprovados por media: {porcentagem(contagemAprovadosMedia, contagemTotal)}%')
-print(f"Aprovados na final:  {porcentagem(contagemAprovados, contagemTotal)}%")
-print(f"Reprovados na final: {porcentagem(contagemReprovados, contagemTotal)}%")
-print(f"Reprovados por falta: {porcentagem(contagemReprovadosFalta, contagemTotal)}%")
+Relatorio = [
+    {
+        'status': 'Aprovados por media',
+        'quantidade': contagemAprovadosMedia,
+        'porcentagem': f'{porcentagem(contagemAprovadosMedia, contagemTotal)}%'
+    },
+    {
+        'status': 'Aprovados na final',
+        'quantidade': contagemAprovados,
+        'porcentagem': f'{porcentagem(contagemAprovados, contagemTotal)}%'
+    },
+    {
+        'status': 'Reprovados na final',
+        'quantidade': contagemReprovados,
+        'porcentagem': f'{porcentagem(contagemReprovados, contagemTotal)}%'
+    },
+    {
+        'status': 'Reprovados por falta',
+        'quantidade': contagemReprovadosFalta,
+        'porcentagem': f'{porcentagem(contagemReprovadosFalta, contagemTotal)}%'
+    },
+    {
+        'status': 'Total de alunos',
+        'quantidade': contagemTotal,
+        'porcentagem': '100%'
+    }
+]
+
+with open('relatorio.csv', 'w', newline='') as arquivo:
+    campos = ['status', 'quantidade', 'porcentagem']
+    gerarRelatorio = csv.DictWriter(arquivo, fieldnames=campos, delimiter=';')
+    gerarRelatorio.writeheader()
+    gerarRelatorio.writerows(Relatorio)
